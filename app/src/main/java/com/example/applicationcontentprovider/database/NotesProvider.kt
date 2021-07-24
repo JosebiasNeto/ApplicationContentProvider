@@ -5,7 +5,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.UriMatcher
 import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import android.media.UnsupportedSchemeException
 import android.net.Uri
+import android.provider.BaseColumns._ID
+import com.example.applicationcontentprovider.database.NotesDataBaseHelper.Companion.TABLE_NOTES
 
 class NotesProvider : ContentProvider() {
 
@@ -23,15 +27,18 @@ class NotesProvider : ContentProvider() {
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
-        TODO("Implement this to handle requests to delete one or more rows")
+        if (mUriMatcher.match(uri) == NOTES_BY_ID){
+            val db:SQLiteDatabase = dbHelper.writableDatabase
+            val linesAffect:Int = db.delete(TABLE_NOTES, _ID, arrayOf(uri.lastPathSegment))
+            db.close()
+            context?.contentResolver?.notifyChange(uri,null)
+            return linesAffect
+        } else {
+            throw UnsupportedSchemeException("Uri inválida para exclusão!")
+        }
     }
 
-    override fun getType(uri: Uri): String? {
-        TODO(
-            "Implement this to handle requests for the MIME type of the data" +
-                    "at the given URI"
-        )
-    }
+    override fun getType(uri: Uri): String? = throw UnsupportedSchemeException("Uri não implementada!")
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
         TODO("Implement this to handle requests to insert a new row.")
