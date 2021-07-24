@@ -82,7 +82,16 @@ class NotesProvider : ContentProvider() {
         uri: Uri, values: ContentValues?, selection: String?,
         selectionArgs: Array<String>?
     ): Int {
-        TODO("Implement this to handle requests to update one or more rows.")
+        if(mUriMatcher.match(uri) == NOTES_BY_ID) {
+            val db: SQLiteDatabase = dbHelper.writableDatabase
+            val linesAffect = db.update(TABLE_NOTES, values, "$_ID = ?", arrayOf(uri.lastPathSegment))
+            db.close()
+            context?.contentResolver?.notifyChange(uri,null)
+            return linesAffect
+        } else {
+            throw UnsupportedSchemeException("Uri não implementada.")
+        }
+
     }
 
     companion object {
