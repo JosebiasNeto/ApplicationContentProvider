@@ -1,7 +1,6 @@
 package com.example.applicationcontentprovider
 
 import android.database.Cursor
-import android.icu.text.CaseMap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +35,7 @@ class NotesAdapter(private val listener: ClickNoteListener): RecyclerView.Adapte
 
     override fun getItemCount(): Int = if (mCursor != null) mCursor?.count as Int else 0
 
-    fun setCursor(newCursor: Cursor){
+    fun setCursor(newCursor: Cursor?){
         mCursor = newCursor
         notifyDataSetChanged()
     }
